@@ -5,7 +5,18 @@ var rollbackMigrationCommand = require('./commands/rollback-migration-command');
 
 var LOGGER = console;
 
+function getAdapter(config) {
+  config.adapter = config.adapter || 'pg';
+  var Adapter = require('./adapters/' + config.adapter);
+
+  return Adapter(config, LOGGER);
+}
+
 function migrate(config, adapter) {
+    if (adapter === undefined) {
+      adapter = getAdapter(config)
+    }
+
     var migrationProvider = MigrationProvider(config);
     return runMigrationsCommand(migrationProvider, adapter, config.minMigrationTime, LOGGER).then(function () {
         return adapter.dispose();
@@ -18,6 +29,10 @@ function migrate(config, adapter) {
 }
 
 function rollback(config, adapter) {
+    if (adapter === undefined) {
+      adapter = getAdapter(config)
+    }
+
     var migrationProvider = MigrationProvider(config);
     return rollbackMigrationCommand(migrationProvider, adapter, LOGGER).then(function () {
         return adapter.dispose();
@@ -36,11 +51,7 @@ module.exports = {
     migrate: migrate,
     rollback: rollback,
     run: function (config) {
-        config.adapter = config.adapter || 'pg';
-
-        var Adapter = require('./adapters/' + config.adapter);
-        var adapter = Adapter(config, LOGGER);
-
+        var adapter = getAdapter(config)
         var args = process.argv.slice(2);
 
         switch (args[0]) {
