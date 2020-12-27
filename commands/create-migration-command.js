@@ -2,9 +2,22 @@ var fs = require('fs'),
     mkdirp = require('mkdirp'),
     path = require('path');
 
-module.exports = function (config, logger, migrationName) {
+module.exports = function (config, logger, migrationName, migrationProvider) {
     var up, down,
         ts = Date.now();
+
+    if (config.sequence === 'increment') {
+      var migrations = migrationProvider.getMigrationsList()
+      migrations.sort()
+      var last = migrations[migrations.length - 1]
+      var lastCount = parseInt(last.substring(0, last.indexOf('_')))
+
+      if (isNaN(lastCount)) {
+        throw new Error('migration "' + last + "' sequence number could not be parsed. It must be an integer.");
+      }
+
+      ts = lastCount + 1
+    }
 
     if (typeof config.migrationsDir !== 'string') {
         throw new Error('configuration "migrationsDir" is missing');

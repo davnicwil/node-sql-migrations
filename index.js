@@ -44,6 +44,11 @@ function rollback(config, adapter) {
     });
 }
 
+function create(config, migrationName) {
+  var migrationProvider = MigrationProvider(config);
+  return createMigrationCommand(config, LOGGER, migrationName, migrationProvider)
+}
+
 module.exports = {
     setLogger: function (logger) {
         LOGGER = logger;
@@ -56,7 +61,8 @@ module.exports = {
 
         switch (args[0]) {
             case 'create':
-                createMigrationCommand(config, LOGGER, args[1]);
+                console.log('------------')
+                create(config, args[1]);
                 break;
             case 'migrate':
                 migrate(config, adapter).then(onCliSuccess, onCliError);
