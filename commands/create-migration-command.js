@@ -12,8 +12,8 @@ module.exports = function (config, logger, migrationName) {
 
     mkdirp.sync(config.migrationsDir);
 
-    up = ts + '_up_' + migrationName + '.sql';
-    down = ts + '_down_' + migrationName + '.sql';
+    up = ts + '_up' + (migrationName ? '_' + migrationName : '') + '.sql';
+    down = ts + '_down' + (migrationName ? '_' + migrationName : '') + '.sql';
 
     up = path.resolve(config.migrationsDir, up);
     down = path.resolve(config.migrationsDir, down);
