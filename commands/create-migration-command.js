@@ -7,6 +7,7 @@ module.exports = function (config, logger, migrationName, migrationProvider) {
         ts = Date.now();
 
     if (config.sequence === 'increment') {
+      console.log('>>>>>>')
       var migrations = migrationProvider.getMigrationsList()
       migrations.sort()
       var last = migrations[migrations.length - 1]

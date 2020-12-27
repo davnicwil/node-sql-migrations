@@ -61,7 +61,6 @@ module.exports = {
 
         switch (args[0]) {
             case 'create':
-                console.log('------------')
                 create(config, args[1]);
                 break;
             case 'migrate':
